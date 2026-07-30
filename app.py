@@ -57,6 +57,36 @@ def inject_css() -> None:
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+      /* --- theme lock -------------------------------------------------------
+         Streamlit follows the viewer's OS dark-mode preference unless
+         .streamlit/config.toml pins it. That file is dot-prefixed and is easily
+         lost when a repo is uploaded through a web UI, which would leave this
+         drafting-sheet palette painted over dark Streamlit chrome -- dark text on
+         dark ground. These rules make the light theme hold on their own, so a
+         missing config.toml degrades the app's polish rather than its legibility.
+         Scoped to Streamlit's own containers and text nodes: the colour-coded
+         numbers below set their colours inline and must not be overridden. */
+      :root, html {{ color-scheme: light !important; }}
+      html, body, .stApp, [data-testid="stApp"],
+      [data-testid="stAppViewContainer"], [data-testid="stMain"],
+      [data-testid="stHeader"] {{ background: {SHEET} !important; }}
+      [data-testid="stSidebar"], [data-testid="stSidebarContent"],
+      [data-testid="stSidebarUserContent"] {{ background: {PAPER} !important; }}
+      [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label,
+      [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li,
+      [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2,
+      [data-testid="stMarkdownContainer"] h3, [data-testid="stMarkdownContainer"] h4,
+      .stRadio label p, .stCheckbox label p,
+      [data-baseweb="select"] div {{ color: {INK} !important; }}
+      [data-testid="stSlider"] [role="slider"],
+      [data-testid="stSlider"] div[data-baseweb="slider"] div[style*="background"] {{
+          background-color: {COOL} !important; }}
+      [data-baseweb="radio"] div[aria-checked="true"],
+      [data-testid="stSliderTickBarMin"], [data-testid="stSliderTickBarMax"] {{
+          color: {GRAPHITE} !important; }}
+      input, textarea, [data-baseweb="input"], [data-baseweb="select"] > div {{
+          background: #FFFFFF !important; color: {INK} !important; }}
+
       .stApp {{ background: {SHEET}; }}
       html, body, [class*="css"] {{ font-family: 'IBM Plex Sans', system-ui, sans-serif;
                                     color: {INK}; }}
@@ -72,7 +102,8 @@ def inject_css() -> None:
       .titleblock > div {{ padding: .7rem 1.1rem; border-left: 1px solid {RULE}; }}
       .titleblock > div:first-child {{ border-left: none; }}
       .tb-name {{ font-family: 'IBM Plex Sans Condensed', sans-serif;
-                  font-size: 1.45rem; font-weight: 700; line-height: 1.1; }}
+                  font-size: 1.45rem; font-weight: 700; line-height: 1.1;
+                  color: {INK}; }}
       .tb-sub {{ font-size: .78rem; color: {GRAPHITE}; margin-top: .15rem; }}
       .tb-label {{ font-family: 'IBM Plex Mono', monospace; font-size: .6rem;
                    letter-spacing: .13em; color: {GRAPHITE}; text-transform: uppercase; }}
@@ -400,7 +431,7 @@ with tab3:
             if d == 0:
                 continue
             h, c = predict(shape, max(glazing_area, 0.1), d, orientation)
-            rows.append({"x": GLAZING_LAYOUTS[d].split(" — ")[0],
+            rows.append({"x": GLAZING_LAYOUTS[d].split(" - ")[0],
                          "Heating": h, "Cooling": c})
     else:
         for s in SHAPES:
