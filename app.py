@@ -46,13 +46,7 @@ st.set_page_config(page_title="Thermal Envelope Explorer",
 
 #style
 def inject_css() -> None:
-    """Inject the stylesheet.
-
-    Uses st.html(), not st.markdown(): Markdown ends a raw HTML block at the first
-    blank line, which would spill the rest of the stylesheet onto the page as visible
-    text and leave those rules unapplied. Blank lines are stripped as well, so the
-    block stays safe regardless of which renderer handles it.
-    """
+    
     css = f"""
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -68,8 +62,8 @@ def inject_css() -> None:
          numbers below set their colours inline and must not be overridden. */
       :root, html {{ color-scheme: light !important; }}
       html, body, .stApp, [data-testid="stApp"],
-      [data-testid="stAppViewContainer"], [data-testid="stMain"],
-      [data-testid="stHeader"] {{ background: {SHEET} !important; }}
+      [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
+          background: {SHEET} !important; }}
       [data-testid="stSidebar"], [data-testid="stSidebarContent"],
       [data-testid="stSidebarUserContent"] {{ background: {PAPER} !important; }}
       [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label,
@@ -92,14 +86,21 @@ def inject_css() -> None:
                                     color: {INK}; }}
       h1, h2, h3, h4 {{ font-family: 'IBM Plex Sans Condensed', sans-serif;
                         letter-spacing: .01em; color: {INK}; }}
-
+      
       #MainMenu, footer, [data-testid="stToolbar"], [data-testid="stToolbarActions"],
       [data-testid="stDecoration"], [data-testid="stStatusWidget"],
       [data-testid="stHeaderActionElements"] {{ visibility: hidden !important; }}
       [data-testid="stExpandSidebarButton"], [data-testid="stExpandSidebarButton"] *,
       [data-testid="stSidebarCollapseButton"], [data-testid="stSidebarCollapseButton"] * {{
           visibility: visible !important; }}
-      .block-container {{ padding-top: 1.6rem; max-width: 1320px; }}
+      [data-testid="stMainBlockContainer"], .block-container {{
+          padding-top: 2.2rem !important; max-width: 1320px; }}
+      /* The header is 60px, absolutely positioned and painted over the content, so
+         anything scrolled up vanishes behind a bar the same colour as the page.
+         Collapse it to zero height with a transparent background: nothing overlaps,
+         while the sidebar expand button inside it still renders and stays clickable. */
+      [data-testid="stHeader"] {{ background: transparent !important; height: 0 !important;
+          min-height: 0 !important; overflow: visible !important; }}
 
       /* --- drawing title block --- */
       .titleblock {{ border: 1.5px solid {INK}; background: {PAPER};
@@ -258,7 +259,7 @@ with st.sidebar:
         value=0.25, format_func=lambda v: f"{v:.0%}")
     if glazing_area == 0:
         glazing_distrib = 0
-        st.caption("Unglazed - no layout to choose.")
+        st.caption("Unglazed — no layout to choose.")
     else:
         glazing_distrib = st.selectbox(
             "Glazing layout", [d for d in META["glazing_distribs"] if d != 0],
@@ -289,7 +290,7 @@ heat, cool = predict(shape, glazing_area, glazing_distrib, orientation)
 tab1, tab2, tab3, tab4 = st.tabs(
     ["Design explorer", "Compare schemes", "Sensitivity", "Model card"])
 
-#TAB 1 (explorer)
+#TAB 1 — explorer
 with tab1:
     left, right = st.columns([1.05, 1])
 
@@ -360,16 +361,16 @@ with tab1:
             f'<span class="badge badge-ok">Inside validated envelope</span>'
             f'<div class="note" style="margin-top:.5rem">Every input above is one the '
             f'model was trained on, so the quoted error bars apply. The tool only '
-            f'offers the 12 simulated massings for this reason, see the model card '
-            f'for what happens outside them.</div>', unsafe_allow_html=True)
+            f'offers the 12 simulated massings for this reason (see the model card '
+            f'for what happens outside them).</div>', unsafe_allow_html=True)
 
-#TAB 2 (compare)
+#TAB 2 — compare
 with tab2:
     shortlist = st.session_state.get("shortlist", [])
     if not shortlist:
         st.markdown("#### No schemes yet")
         st.markdown('<div class="note">Set a design in the sidebar and choose '
-                    '<b>Add to shortlist</b>. Add two or more to compare them here — '
+                    '<b>Add to shortlist</b>. Add two or more to compare them here '
                     'the tool ranks by combined load and shows the seasonal split for '
                     'each.</div>', unsafe_allow_html=True)
     else:
@@ -419,7 +420,7 @@ with tab2:
                 st.session_state["shortlist"] = []
                 st.rerun()
 
-#TAB 3 (sensitivity)
+#TAB 3 — sensitivity
 with tab3:
     st.markdown("#### Vary one parameter, hold the rest")
     st.markdown('<div class="note">Sweeps the chosen parameter across every value the '
@@ -479,7 +480,7 @@ with tab3:
                 f'{sw["Cooling"].max() - sw["Cooling"].min():.2f} kWh/m²</b></div>',
                 unsafe_allow_html=True)
 
-#TAB 4 (model card)
+#TAB 4 — model card
 with tab4:
     c1, c2 = st.columns([1, 1.25])
 
@@ -498,7 +499,7 @@ with tab4:
         st.markdown(
             f'<div class="note">Measured on {META["n_test"]} designs held out of '
             f'training. Two different algorithms are used because they were each the '
-            f'best on their own load forcing one on both cost 13% accuracy on '
+            f'best on their own load, forcing one on both cost 13% accuracy on '
             f'cooling.</div>', unsafe_allow_html=True)
 
         st.markdown("#### Where the tool stops working")
@@ -508,7 +509,7 @@ with tab4:
             f'<div class="note" style="margin-top:.5rem">Asked to predict a massing it '
             f'has never seen, error rises to <b>{ex["HeatingLoad"]["grouped_rmse"]:.1f}'
             f'</b> kWh/m² for heating and <b>{ex["CoolingLoad"]["grouped_rmse"]:.1f}'
-            f'</b> for cooling — roughly ten times worse, and no longer useful. That is '
+            f'</b> for cooling its roughly ten times worse, and no longer useful. That is '
             f'why the shape selector offers only the 12 validated massings. Take a novel '
             f'massing to a full EnergyPlus run.</div>', unsafe_allow_html=True)
         st.markdown(
@@ -540,7 +541,7 @@ with tab4:
         st.markdown(
             '<div class="note"><b>The two loads answer to different levers.</b> '
             'Orientation and glazing layout matter roughly 4–7× more for cooling than '
-            'for heating — the signature of solar gain. Heating is set by envelope '
+            'for heating, the signature of solar gain. Heating is set by envelope '
             'geometry instead. Practically: fix the massing first, since it drives '
             'both, then tune orientation and glazing for summer performance, where '
             'they are nearly free in winter terms.</div>', unsafe_allow_html=True)
