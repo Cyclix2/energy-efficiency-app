@@ -1,0 +1,201 @@
+{
+  "targets": [
+    "HeatingLoad",
+    "CoolingLoad"
+  ],
+  "random_state": 42,
+  "n_train": 614,
+  "n_test": 154,
+  "features": [
+    "RelCompactness",
+    "WallArea",
+    "RoofArea",
+    "Height",
+    "Orientation",
+    "GlazingArea",
+    "GlazingDistrib",
+    "GlazedArea_abs",
+    "WallToRoof",
+    "SurfaceToVolume",
+    "IsTwoStorey",
+    "NoGlazing"
+  ],
+  "metrics": {
+    "HeatingLoad": {
+      "RMSE": 0.3513159488679121,
+      "MAE": 0.25322138344918105,
+      "R2": 0.9988158875269281,
+      "model_name": "GradientBoostingRegressor",
+      "mean_load": 22.3071953125,
+      "MAPE": 1.1733610461038408
+    },
+    "CoolingLoad": {
+      "RMSE": 1.0291326735695996,
+      "MAE": 0.5437118663814373,
+      "R2": 0.9885695484159175,
+      "model_name": "HistGradientBoostingRegressor",
+      "mean_load": 24.58776041666667,
+      "MAPE": 1.9170814573252384
+    }
+  },
+  "business_bar": {
+    "HeatingLoad": 1.115359765625,
+    "CoolingLoad": 1.2293880208333334
+  },
+  "importance": {
+    "HeatingLoad": {
+      "RelCompactness": 1.8617634098159292,
+      "GlazedArea_abs": 2.4919249231868976,
+      "GlazingDistrib": 0.28268702390262535,
+      "Orientation": 0.1664736903137031,
+      "GlazingArea": 1.2172090951755226,
+      "SurfaceToVolume": 1.3581162954656363,
+      "WallArea": 3.0072435591325135,
+      "WallToRoof": 2.990879181272435,
+      "NoGlazing": 0.31255778293008085,
+      "Height": 2.1794120376159825,
+      "IsTwoStorey": 3.1016543420840597,
+      "RoofArea": 0.8608198182185026
+    },
+    "CoolingLoad": {
+      "RelCompactness": 11.394371071353282,
+      "GlazedArea_abs": 1.6028001566511194,
+      "GlazingDistrib": 1.19207505236708,
+      "Orientation": 1.1110518045252524,
+      "GlazingArea": 0.7950264494541726,
+      "SurfaceToVolume": 0.6486197931970863,
+      "WallArea": 0.28523675643209756,
+      "WallToRoof": 0.17984141622237465,
+      "NoGlazing": 0.02315767262257582,
+      "Height": 0.0,
+      "IsTwoStorey": 0.0,
+      "RoofArea": -0.008644586563359535
+    }
+  },
+  "extrapolation": {
+    "HeatingLoad": {
+      "grouped_rmse": 4.359494782385725,
+      "worst_fold": 8.457776726892954
+    },
+    "CoolingLoad": {
+      "grouped_rmse": 8.417106395472162,
+      "worst_fold": 13.83515075395708
+    }
+  },
+  "shapes": [
+    {
+      "RelCompactness": 0.62,
+      "SurfaceArea": 808.5,
+      "WallArea": 367.5,
+      "RoofArea": 220.5,
+      "Height": 3.5
+    },
+    {
+      "RelCompactness": 0.64,
+      "SurfaceArea": 784.0,
+      "WallArea": 343.0,
+      "RoofArea": 220.5,
+      "Height": 3.5
+    },
+    {
+      "RelCompactness": 0.66,
+      "SurfaceArea": 759.5,
+      "WallArea": 318.5,
+      "RoofArea": 220.5,
+      "Height": 3.5
+    },
+    {
+      "RelCompactness": 0.69,
+      "SurfaceArea": 735.0,
+      "WallArea": 294.0,
+      "RoofArea": 220.5,
+      "Height": 3.5
+    },
+    {
+      "RelCompactness": 0.71,
+      "SurfaceArea": 710.5,
+      "WallArea": 269.5,
+      "RoofArea": 220.5,
+      "Height": 3.5
+    },
+    {
+      "RelCompactness": 0.74,
+      "SurfaceArea": 686.0,
+      "WallArea": 245.0,
+      "RoofArea": 220.5,
+      "Height": 3.5
+    },
+    {
+      "RelCompactness": 0.76,
+      "SurfaceArea": 661.5,
+      "WallArea": 416.5,
+      "RoofArea": 122.5,
+      "Height": 7.0
+    },
+    {
+      "RelCompactness": 0.79,
+      "SurfaceArea": 637.0,
+      "WallArea": 343.0,
+      "RoofArea": 147.0,
+      "Height": 7.0
+    },
+    {
+      "RelCompactness": 0.82,
+      "SurfaceArea": 612.5,
+      "WallArea": 318.5,
+      "RoofArea": 147.0,
+      "Height": 7.0
+    },
+    {
+      "RelCompactness": 0.86,
+      "SurfaceArea": 588.0,
+      "WallArea": 294.0,
+      "RoofArea": 147.0,
+      "Height": 7.0
+    },
+    {
+      "RelCompactness": 0.9,
+      "SurfaceArea": 563.5,
+      "WallArea": 318.5,
+      "RoofArea": 122.5,
+      "Height": 7.0
+    },
+    {
+      "RelCompactness": 0.98,
+      "SurfaceArea": 514.5,
+      "WallArea": 294.0,
+      "RoofArea": 110.25,
+      "Height": 7.0
+    }
+  ],
+  "glazing_areas": [
+    0.0,
+    0.1,
+    0.25,
+    0.4
+  ],
+  "glazing_distribs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "orientations": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "load_ranges": {
+    "HeatingLoad": {
+      "min": 6.01,
+      "max": 43.1
+    },
+    "CoolingLoad": {
+      "min": 10.9,
+      "max": 48.03
+    }
+  }
+}
