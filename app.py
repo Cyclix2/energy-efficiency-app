@@ -92,7 +92,13 @@ def inject_css() -> None:
                                     color: {INK}; }}
       h1, h2, h3, h4 {{ font-family: 'IBM Plex Sans Condensed', sans-serif;
                         letter-spacing: .01em; color: {INK}; }}
-      #MainMenu, footer, header {{ visibility: hidden; }}
+
+      #MainMenu, footer, [data-testid="stToolbar"], [data-testid="stToolbarActions"],
+      [data-testid="stDecoration"], [data-testid="stStatusWidget"],
+      [data-testid="stHeaderActionElements"] {{ visibility: hidden !important; }}
+      [data-testid="stExpandSidebarButton"], [data-testid="stExpandSidebarButton"] *,
+      [data-testid="stSidebarCollapseButton"], [data-testid="stSidebarCollapseButton"] * {{
+          visibility: visible !important; }}
       .block-container {{ padding-top: 1.6rem; max-width: 1320px; }}
 
       /* --- drawing title block --- */
@@ -143,6 +149,15 @@ def inject_css() -> None:
       .stTabs [aria-selected="true"] {{ background: {INK}; color: {SHEET}; }}
       div[data-testid="stMetricValue"] {{ font-family: 'IBM Plex Sans Condensed', sans-serif; }}
     </style>"""
+    open_tag, close_tag = "<style>", "</style>"
+    body = css[css.index(open_tag) + len(open_tag):css.rindex(close_tag)]
+    if "<" in body:
+        raise ValueError(
+            "A '<' appears inside the stylesheet body. st.html parses the whole "
+            "string as HTML, so a bracketed tag name -- even inside a CSS comment -- "
+            "closes the style element early and every rule after it is discarded "
+            "with no error. Remove the angle brackets."
+        )
     st.html("\n".join(line for line in css.splitlines() if line.strip()))
 
 
@@ -243,7 +258,7 @@ with st.sidebar:
         value=0.25, format_func=lambda v: f"{v:.0%}")
     if glazing_area == 0:
         glazing_distrib = 0
-        st.caption("Unglazed — no layout to choose.")
+        st.caption("Unglazed - no layout to choose.")
     else:
         glazing_distrib = st.selectbox(
             "Glazing layout", [d for d in META["glazing_distribs"] if d != 0],
@@ -354,7 +369,7 @@ with tab2:
     if not shortlist:
         st.markdown("#### No schemes yet")
         st.markdown('<div class="note">Set a design in the sidebar and choose '
-                    '<b>Add to shortlist</b>. Add two or more to compare them here '
+                    '<b>Add to shortlist</b>. Add two or more to compare them here — '
                     'the tool ranks by combined load and shows the seasonal split for '
                     'each.</div>', unsafe_allow_html=True)
     else:
@@ -483,7 +498,7 @@ with tab4:
         st.markdown(
             f'<div class="note">Measured on {META["n_test"]} designs held out of '
             f'training. Two different algorithms are used because they were each the '
-            f'best on their own load, forcing one on both cost 13% accuracy on '
+            f'best on their own load forcing one on both cost 13% accuracy on '
             f'cooling.</div>', unsafe_allow_html=True)
 
         st.markdown("#### Where the tool stops working")
@@ -493,7 +508,7 @@ with tab4:
             f'<div class="note" style="margin-top:.5rem">Asked to predict a massing it '
             f'has never seen, error rises to <b>{ex["HeatingLoad"]["grouped_rmse"]:.1f}'
             f'</b> kWh/m² for heating and <b>{ex["CoolingLoad"]["grouped_rmse"]:.1f}'
-            f'</b> for cooling its roughly ten times worse, and no longer useful. That is '
+            f'</b> for cooling — roughly ten times worse, and no longer useful. That is '
             f'why the shape selector offers only the 12 validated massings. Take a novel '
             f'massing to a full EnergyPlus run.</div>', unsafe_allow_html=True)
         st.markdown(
@@ -525,7 +540,7 @@ with tab4:
         st.markdown(
             '<div class="note"><b>The two loads answer to different levers.</b> '
             'Orientation and glazing layout matter roughly 4–7× more for cooling than '
-            'for heating, the signature of solar gain. Heating is set by envelope '
+            'for heating — the signature of solar gain. Heating is set by envelope '
             'geometry instead. Practically: fix the massing first, since it drives '
             'both, then tune orientation and glazing for summer performance, where '
             'they are nearly free in winter terms.</div>', unsafe_allow_html=True)
